@@ -3,37 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body, html { height: 100%; }
-        iframe { width: 100%; height: 100vh; border: none; }
-        .header {
+        body {
+            background-image: url('https://fleetkloud.com/wl/login_bg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            height: 100vh;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            background-color: white;
-            border-bottom: 1px solid #e0e0e0;
-            width: 100%;
+            justify-content: center;
         }
-        .header img {
-            max-height: 40px;
-            margin-right: 20px;
+        .btn {
+            font-size: 16px;
+            line-height: 38px;
+            border-radius: 4px;
+            border-color: #fb4f14;
+            color: #fff;
+            width: 100%;
+            background-color: #fb4f14;
+            outline: 0;
+            box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 12px;
+            height: 44px;
+            position: relative;
+        }
+        .card {
+            background-color: #595959aa;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+        .form-control {
+            background-color: #2d2d2d;
+            color: #cbcaca;
+        }
+        .form-control:focus {
+            background-color: #fff;
+            color: #2d2d2d;
+        }
+        .logo-image {
+            display: inline-block;
+            background-repeat: no-repeat;
+            height: 70px;
+            width: 300px;
+            background-size: 300px auto;
+            background-position: 50%;
+            vertical-align: middle;
+            -webkit-user-select: none;
+            margin-top: 30px;
+            margin-bottom: 22px;
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="header">
-            <h3>Concor Data Analysis Insights</h3>
-            <img src="/fleetkloud-concor/640px-CONCOR_LOGO.jpeg" alt="Logo">
-        </div>
-        <div class="row">
-            <div class="col-12 p-0">
-                <iframe frameborder=0 width="100%" height="800" src="https://analytics.zoho.com/open-view/2471579000002064062/dabff991c3a5282f8b12fd8925ec9d39" style="max-width: 100%;"></iframe>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="loginForm" action="http://localhost:3000/index" method="post" enctype="application/x-www-form-urlencoded">
+                            <img src="https://fleetkloud.com/wl/logo" alt="Logo" class="logo-image">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            </div>
+                            <div id="errorAlert" class="alert alert-danger mt-3" role="alert" style="display: none;">
+                                Invalid Credentials. Please try again.
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Login Error</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Invalid credentials
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ... rest of your HTML content ... -->
+
+<!-- Bootstrap Modal code (from Step 1) goes here -->
+
+<!-- JavaScript code -->
+<script>
+    function submitForm(event) {
+        event.preventDefault();
+    
+        const formData = new URLSearchParams(new FormData(event.target)); // Convert FormData to URLSearchParams
+    
+        fetch('/index', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // Set the correct header
+            },
+            body: formData.toString() // Convert the URLSearchParams object to a string
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = 'https://concor-analytics.fleetkloud.com/data.html';
+            } else {
+                $('#errorModal').modal('show');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.style.display = 'block';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);            
+        });        
+    }    
+    document.getElementById('loginForm').addEventListener('submit', submitForm);
+    </script>
+    <!-- Bootstrap and Popper.js libraries -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
